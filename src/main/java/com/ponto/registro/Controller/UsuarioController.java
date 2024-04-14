@@ -59,4 +59,10 @@ import java.util.List;
         UsuarioResponseDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioRequestDTO);
         return new ResponseEntity<>(usuarioAtualizado, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) throws RegraDeNegocioException {
+        usuarioService.deletarUsuario(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

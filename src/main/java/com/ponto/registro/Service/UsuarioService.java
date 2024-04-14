@@ -77,6 +77,12 @@ public class UsuarioService {
         return toDTO(savedUsuario);
     }
 
+    public void deletarUsuario(Long id) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+        usuarioRepository.delete(usuario);
+    }
+
     private void validarDadosUsuario(UsuarioRequestDTO usuario) throws RegraDeNegocioException {
         if (usuario.getEmail() == null || usuario.getSenha() == null) {
             throw new RegraDeNegocioException("Email e senha são obrigatórios");

@@ -34,6 +34,12 @@ public class UsuarioService {
         return objectMapper.convertValue(usuarios, List.class);
     }
 
+    public UsuarioResponseDTO buscarUsuarioPorId(Long id) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+        return toDTO(usuario);
+    }
+
     public UsuarioResponseDTO criarUsuario(UsuarioRequestDTO usuarioRequestDTO) throws RegraDeNegocioException {
         verificarEmailExistete(usuarioRequestDTO.getEmail());
         validarDadosUsuario(usuarioRequestDTO);

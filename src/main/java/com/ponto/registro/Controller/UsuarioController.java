@@ -29,6 +29,13 @@ import java.util.List;
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorId(
+            @PathVariable Long id) throws RegraDeNegocioException {
+        UsuarioResponseDTO usuario = usuarioService.buscarUsuarioPorId(id);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> criarUsuario(
             @Valid @RequestBody UsuarioRequestDTO usuarioRequestDTO)

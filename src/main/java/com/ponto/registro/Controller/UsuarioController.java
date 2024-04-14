@@ -1,5 +1,6 @@
 package com.ponto.registro.Controller;
 
+import com.ponto.registro.DTO.UsuarioDTO;
 import com.ponto.registro.DTO.UsuarioRequestDTO;
 import com.ponto.registro.DTO.UsuarioResponseDTO;
 import com.ponto.registro.Models.Cargo;
@@ -49,5 +50,13 @@ import java.util.List;
             throws RegraDeNegocioException {
         UsuarioResponseDTO usuarioCriado = usuarioService.criarUsuario(usuarioRequestDTO);
         return new ResponseEntity<>(usuarioCriado, HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(
+            @Valid @RequestBody UsuarioDTO usuarioRequestDTO)
+            throws RegraDeNegocioException {
+        UsuarioResponseDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioRequestDTO);
+        return new ResponseEntity<>(usuarioAtualizado, HttpStatus.OK);
     }
 }

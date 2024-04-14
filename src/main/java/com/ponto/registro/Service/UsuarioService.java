@@ -1,6 +1,7 @@
 package com.ponto.registro.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ponto.registro.DTO.UsuarioDTO;
 import com.ponto.registro.DTO.UsuarioRequestDTO;
 import com.ponto.registro.DTO.UsuarioResponseDTO;
 import com.ponto.registro.Models.Cargo;
@@ -54,6 +55,22 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
 
         Usuario usuario = toEntity(usuarioRequestDTO);
+        usuario.setCargo(cargo);
+
+        Usuario savedUsuario = usuarioRepository.save(usuario);
+        return toDTO(savedUsuario);
+    }
+
+    public UsuarioResponseDTO atualizarUsuario(UsuarioDTO usuarioDTO) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findById(usuarioDTO.getIdUsuario())
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+
+        usuario.setNome(usuarioDTO.getNome());
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setCpf(usuarioDTO.getCpf());
+
+        Cargo cargo = cargoRepository.findById(usuarioDTO.getIdCargo())
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
         usuario.setCargo(cargo);
 
         Usuario savedUsuario = usuarioRepository.save(usuario);

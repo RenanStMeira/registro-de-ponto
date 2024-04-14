@@ -5,6 +5,7 @@ import com.ponto.registro.DTO.UsuarioRequestDTO;
 import com.ponto.registro.DTO.UsuarioResponseDTO;
 import com.ponto.registro.Models.Cargo;
 import com.ponto.registro.Models.Usuario;
+import com.ponto.registro.Repository.CargoRepository;
 import com.ponto.registro.Repository.UsuarioRepository;
 import com.ponto.registro.exceptions.RegraDeNegocioException;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +18,25 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {
         return Optional.empty();
     }
 
-    public Usuario CriarUsuario(UsuarioRequestDTO usuarioRequestDTO, Cargo cargo) throws RegraDeNegocioException {
-        Usuario usuario = new Usuario();
+    public UsuarioResponseDTO criarUsuario(UsuarioRequestDTO usuarioRequestDTO) throws RegraDeNegocioException {
+        verificarEmailExistete(usuarioRequestDTO.getEmail());
+        validarDadosUsuario(usuarioRequestDTO);
 
-        usuario.setNome(usuarioRequestDTO.getNome());
-        usuario.setEmail(usuarioRequestDTO.getEmail());
-        usuario.setSenha(usuarioRequestDTO.getSenha());
+        Cargo cargo = cargoRepository.findById(usuarioRequestDTO.getIdCargo())
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+
+        Usuario usuario = toEntity(usuarioRequestDTO);
         usuario.setCargo(cargo);
 
-        return usuarioRepository.save(usuario);
+        Usuario savedUsuario = usuarioRepository.save(usuario);
+        return toDTO(savedUsuario);
     }
 
     private void validarDadosUsuario(UsuarioRequestDTO usuario) throws RegraDeNegocioException {
@@ -55,13 +60,17 @@ public class UsuarioService {
         return dto;
     }
 
-    private Usuario toEntity(UsuarioRequestDTO dto) {
+    private Usuario toEntity(UsuarioRequestDTO dto) throws RegraDeNegocioException {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
         usuario.setCpf(dto.getCpf());
-        usuario.setCargo(dto.getCargo());
+
+        Cargo cargo = cargoRepository.findById(dto.getIdCargo())
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+        usuario.setCargo(cargo);
+
         return usuario;
     }
 }

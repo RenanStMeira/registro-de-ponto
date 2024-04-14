@@ -27,5 +27,7 @@ public class UsuarioRequestDTO {
     @CPF
     private String cpf;
 
-    private Cargo cargo;
+    @NotNull
+    @Schema(description = "ID do cargo do usuário", example = "1", required = true)
+    private Long idCargo;
 }

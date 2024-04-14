@@ -36,6 +36,13 @@ import java.util.List;
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorCpf(
+            @PathVariable String cpf) throws RegraDeNegocioException {
+        UsuarioResponseDTO usuario = usuarioService.buscarUsuarioPorCpf(cpf);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> criarUsuario(
             @Valid @RequestBody UsuarioRequestDTO usuarioRequestDTO)

@@ -40,6 +40,12 @@ public class UsuarioService {
         return toDTO(usuario);
     }
 
+    public UsuarioResponseDTO buscarUsuarioPorCpf(String cpf) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findByCpf(cpf)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+        return toDTO(usuario);
+    }
+
     public UsuarioResponseDTO criarUsuario(UsuarioRequestDTO usuarioRequestDTO) throws RegraDeNegocioException {
         verificarEmailExistete(usuarioRequestDTO.getEmail());
         validarDadosUsuario(usuarioRequestDTO);

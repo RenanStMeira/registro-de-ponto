@@ -26,7 +26,7 @@ public class Cargo {
 
 
     public String getAuthority() {
-
         return tipo;
     }
+
 }

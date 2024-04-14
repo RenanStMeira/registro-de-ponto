@@ -1,5 +1,6 @@
 package com.ponto.registro.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -21,6 +22,7 @@ public class Cargo {
     @Column(name = "tipo")
     private String tipo;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "cargo")
     private List<Usuario> usuarios;
 

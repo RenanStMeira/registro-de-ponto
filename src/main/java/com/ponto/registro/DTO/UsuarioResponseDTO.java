@@ -8,4 +8,5 @@ public class UsuarioResponseDTO {
     private String email;
     private String cpf;
     private String cargo;
+    private Long idCargo;
 }

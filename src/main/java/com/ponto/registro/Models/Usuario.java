@@ -1,5 +1,6 @@
 package com.ponto.registro.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import javax.persistence.*;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class Usuario {
 
     @ManyToOne
     @JoinColumn(name = "cargo_id")
+    @JsonBackReference
     private Cargo cargo;
 
     @OneToMany(mappedBy = "usuario")

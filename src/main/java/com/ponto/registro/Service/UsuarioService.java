@@ -11,6 +11,7 @@ import com.ponto.registro.exceptions.RegraDeNegocioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,6 +24,14 @@ public class UsuarioService {
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {
         return Optional.empty();
+    }
+
+    public List<UsuarioResponseDTO> buscarTodosUsuarios() throws RegraDeNegocioException {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        if (usuarios.isEmpty()) {
+            throw new RegraDeNegocioException("Nenhum usuário encontrado");
+        }
+        return objectMapper.convertValue(usuarios, List.class);
     }
 
     public UsuarioResponseDTO criarUsuario(UsuarioRequestDTO usuarioRequestDTO) throws RegraDeNegocioException {
@@ -57,6 +66,7 @@ public class UsuarioService {
         dto.setEmail(usuario.getEmail());
         dto.setCpf(usuario.getCpf());
         dto.setCargo(usuario.getCargo().getAuthority());
+        dto.setIdCargo(usuario.getCargo().getIdCargo());
         return dto;
     }
 

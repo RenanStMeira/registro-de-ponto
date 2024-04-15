@@ -26,6 +26,8 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
     private final PasswordEncoder passwordEncoder;
 
+
+
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {
         return Optional.empty();
     }

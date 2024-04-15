@@ -26,7 +26,6 @@ public class Cargo {
     @OneToMany(mappedBy = "cargo")
     private List<Usuario> usuarios;
 
-
     public String getAuthority() {
         return tipo;
     }

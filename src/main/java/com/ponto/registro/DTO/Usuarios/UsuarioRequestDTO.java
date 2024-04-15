@@ -1,6 +1,5 @@
 package com.ponto.registro.DTO.Usuarios;
 
-import com.ponto.registro.Models.Cargo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;

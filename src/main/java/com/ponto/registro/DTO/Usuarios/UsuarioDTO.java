@@ -1,9 +1,6 @@
 package com.ponto.registro.DTO.Usuarios;
 
-import com.ponto.registro.Models.Cargo;
 import lombok.Data;
-
-import java.util.Set;
 
 @Data
 public class UsuarioDTO {

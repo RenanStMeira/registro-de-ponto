@@ -22,10 +22,8 @@ public class RelatorioService {
     }
 
     public RelatorioDTO buscarPorId(Long id) {
-        System.out.println("Buscando relatório com o ID: " + id);
         RelatorioDeHoras relatorio = relatorioDeHorasRepository.findById(id)
                 .orElseThrow(() -> {
-                    System.out.println("Nenhum relatório encontrado com o ID: " + id);
                     return new RuntimeException("Relatório não encontrado com o ID: " + id);
                 });
         return toDTO(relatorio);

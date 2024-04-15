@@ -26,6 +26,10 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    private static final String CARGO_NAO_ENCONTRADO = "Cargo não encontrado";
+    private static final String EMAIL_SENHA_OBRIGATORIOS = "Email e senha são obrigatórios";
+    private static final String JA_EXISTE_USUARIO_COM_EMAIL = "Já existe um usuário cadastrado com este email";
 
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {
@@ -35,20 +39,20 @@ public class UsuarioService {
     public List<UsuarioResponseDTO> buscarTodosUsuarios() throws RegraDeNegocioException {
         List<Usuario> usuarios = usuarioRepository.findAll();
         if (usuarios.isEmpty()) {
-            throw new RegraDeNegocioException("Nenhum usuário encontrado");
+            throw new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO);
         }
         return objectMapper.convertValue(usuarios, List.class);
     }
 
     public UsuarioResponseDTO buscarUsuarioPorId(Long id) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
         return toDTO(usuario);
     }
 
     public UsuarioResponseDTO buscarUsuarioPorCpf(String cpf) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findByCpf(cpf)
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
         return toDTO(usuario);
     }
 
@@ -59,7 +63,7 @@ public class UsuarioService {
         String senhaCriptografada = passwordEncoder.encode(usuarioRequestDTO.getSenha());
 
         Cargo cargo = cargoRepository.findById(usuarioRequestDTO.getIdCargo())
-                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(CARGO_NAO_ENCONTRADO));
 
         Usuario usuario = toEntity(usuarioRequestDTO);
         usuario.setSenha(senhaCriptografada);
@@ -71,14 +75,14 @@ public class UsuarioService {
 
     public UsuarioResponseDTO atualizarUsuario(UsuarioDTO usuarioDTO) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findById(usuarioDTO.getIdUsuario())
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
 
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setCpf(usuarioDTO.getCpf());
 
         Cargo cargo = cargoRepository.findById(usuarioDTO.getIdCargo())
-                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(CARGO_NAO_ENCONTRADO));
         usuario.setCargo(cargo);
 
         Usuario savedUsuario = usuarioRepository.save(usuario);
@@ -87,7 +91,7 @@ public class UsuarioService {
 
     public void alterarSenha(AlterarSenhaDTO alterarSenhaDTO) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findById(alterarSenhaDTO.getIdUsuario())
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
 
         if (!passwordEncoder.matches(alterarSenhaDTO.getSenhaAtual(), usuario.getSenha())) {
             throw new RegraDeNegocioException("Senha atual incorreta");
@@ -101,19 +105,19 @@ public class UsuarioService {
 
     public void deletarUsuario(Long id) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
         usuarioRepository.delete(usuario);
     }
 
     private void validarDadosUsuario(UsuarioRequestDTO usuario) throws RegraDeNegocioException {
         if (usuario.getEmail() == null || usuario.getSenha() == null) {
-            throw new RegraDeNegocioException("Email e senha são obrigatórios");
+            throw new RegraDeNegocioException(EMAIL_SENHA_OBRIGATORIOS);
         }
     }
 
     private void verificarEmailExistete(String email) throws RegraDeNegocioException {
         if (usuarioRepository.existsByEmail(email)) {
-            throw new RegraDeNegocioException("Já existe um usuário cadastrado com este email");
+            throw new RegraDeNegocioException(JA_EXISTE_USUARIO_COM_EMAIL);
         }
     }
 
@@ -135,7 +139,7 @@ public class UsuarioService {
         usuario.setCpf(dto.getCpf());
 
         Cargo cargo = cargoRepository.findById(dto.getIdCargo())
-                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(CARGO_NAO_ENCONTRADO));
         usuario.setCargo(cargo);
 
         return usuario;

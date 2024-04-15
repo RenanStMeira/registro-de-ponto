@@ -26,10 +26,14 @@ public class RegistroDeHorasService {
     private final UsuarioRepository usuarioRepository;
     private final RelatorioRepository relatorioDeHorasRepository;
 
+    private static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    private static final String REGISTRO_NAO_ENCONTRADO = "Registro não encontrado";
+    private static final String RELATORIO_NAO_ENCONTRADO = "Relatório não encontrado";
+
     public RegistroDeHorasDTO iniciarRegistro(Long usuarioId) throws RegraDeNegocioException {
         RegistroDeHoras registro = new RegistroDeHoras();
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
         registro.setUsuario(usuario);
         registro.setDataHoraEntrada(LocalDateTime.now());
         RegistroDeHoras savedRegistro = registroDeHorasRepository.save(registro);
@@ -44,7 +48,7 @@ public class RegistroDeHorasService {
 
     public RegistroDeHorasDTO finalizarRegistro(Long id) throws RegraDeNegocioException {
         RegistroDeHoras registro = registroDeHorasRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Registro não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(REGISTRO_NAO_ENCONTRADO));
         registro.setDataHoraSaida(LocalDateTime.now());
         RegistroDeHoras updatedRegistro = registroDeHorasRepository.save(registro);
 
@@ -52,7 +56,7 @@ public class RegistroDeHorasService {
         String formattedDuration = formatDuration(duration.toMillis());
 
         RelatorioDeHoras relatorio = relatorioDeHorasRepository.findByUsuarioIdUsuario(registro.getUsuario().getIdUsuario())
-                .orElseThrow(() -> new RegraDeNegocioException("Relatório não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(RELATORIO_NAO_ENCONTRADO));
         relatorio.setMinutosTrabalhados(duration);
         relatorioDeHorasRepository.save(relatorio);
 
@@ -66,13 +70,13 @@ public class RegistroDeHorasService {
 
     public RegistroDeHorasDTO buscarRegistroPorId(Long id) throws RegraDeNegocioException {
         RegistroDeHoras registro = registroDeHorasRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Registro não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(REGISTRO_NAO_ENCONTRADO));
         return toDTO(registro);
     }
 
     public RegistroDeHorasDTO atualizarRegistro(RegistroDeHorasDTO registroDTO) throws RegraDeNegocioException {
         RegistroDeHoras registro = registroDeHorasRepository.findById(registroDTO.getId())
-                .orElseThrow(() -> new RegraDeNegocioException("Registro não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(REGISTRO_NAO_ENCONTRADO));
         registro.setDataHoraEntrada(registroDTO.getDataHoraEntrada());
         registro.setDataHoraSaida(registroDTO.getDataHoraSaida());
         RegistroDeHoras updatedRegistro = registroDeHorasRepository.save(registro);

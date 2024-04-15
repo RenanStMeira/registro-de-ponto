@@ -17,12 +17,15 @@ public class LoginService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
+    private static final String SENHA_INCORRETA = "Senha incorreta";
+
     public Usuario login(LoginDTO loginDTO) throws RegraDeNegocioException {
         Usuario usuario = usuarioRepository.findByEmail(loginDTO.getEmail())
-                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+                .orElseThrow(() -> new RegraDeNegocioException(USUARIO_NAO_ENCONTRADO));
 
         if (!passwordEncoder.matches(loginDTO.getSenha(), usuario.getSenha())) {
-            throw new RegraDeNegocioException("Senha incorreta");
+            throw new RegraDeNegocioException(SENHA_INCORRETA);
         }
 
         return usuario;

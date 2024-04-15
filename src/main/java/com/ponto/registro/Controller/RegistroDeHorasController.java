@@ -3,6 +3,7 @@ package com.ponto.registro.Controller;
 import com.ponto.registro.DTO.RegistroDeHoras.RegistroDeHorasDTO;
 import com.ponto.registro.Service.RegistroDeHorasService;
 import com.ponto.registro.exceptions.RegraDeNegocioException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Registros", description = "Endpoint Para Registros")
 @RequestMapping("/api/registros")
 @RequiredArgsConstructor
 public class RegistroDeHorasController {

@@ -2,6 +2,7 @@ package com.ponto.registro.Controller;
 
 import com.ponto.registro.DTO.RelatorioDeHoras.RelatorioDTO;
 import com.ponto.registro.Service.RelatorioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/relatorios")
+@Tag(name = "Relatorios", description = "Endpoint Para Relatorios")
 @RequiredArgsConstructor
 public class RelatorioController {
 

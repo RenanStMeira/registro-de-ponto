@@ -4,6 +4,7 @@ import com.ponto.registro.DTO.Auth.LoginDTO;
 import com.ponto.registro.Models.Usuario;
 import com.ponto.registro.Service.LoginService;
 import com.ponto.registro.exceptions.RegraDeNegocioException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
+@Tag(name = "Login", description = "Endpoint Para Login")
 @RequestMapping("/api/login")
 @RequiredArgsConstructor
 public class LoginController {

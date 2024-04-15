@@ -1,4 +1,4 @@
-package com.ponto.registro.DTO;
+package com.ponto.registro.DTO.Usuarios;
 
 import lombok.Data;
 

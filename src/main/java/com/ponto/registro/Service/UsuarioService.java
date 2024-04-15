@@ -1,15 +1,17 @@
 package com.ponto.registro.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ponto.registro.DTO.UsuarioDTO;
-import com.ponto.registro.DTO.UsuarioRequestDTO;
-import com.ponto.registro.DTO.UsuarioResponseDTO;
+import com.ponto.registro.DTO.Usuarios.AlterarSenhaDTO;
+import com.ponto.registro.DTO.Usuarios.UsuarioDTO;
+import com.ponto.registro.DTO.Usuarios.UsuarioRequestDTO;
+import com.ponto.registro.DTO.Usuarios.UsuarioResponseDTO;
 import com.ponto.registro.Models.Cargo;
 import com.ponto.registro.Models.Usuario;
 import com.ponto.registro.Repository.CargoRepository;
 import com.ponto.registro.Repository.UsuarioRepository;
 import com.ponto.registro.exceptions.RegraDeNegocioException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {
         return Optional.empty();
@@ -51,10 +54,13 @@ public class UsuarioService {
         verificarEmailExistete(usuarioRequestDTO.getEmail());
         validarDadosUsuario(usuarioRequestDTO);
 
+        String senhaCriptografada = passwordEncoder.encode(usuarioRequestDTO.getSenha());
+
         Cargo cargo = cargoRepository.findById(usuarioRequestDTO.getIdCargo())
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
 
         Usuario usuario = toEntity(usuarioRequestDTO);
+        usuario.setSenha(senhaCriptografada);
         usuario.setCargo(cargo);
 
         Usuario savedUsuario = usuarioRepository.save(usuario);
@@ -75,6 +81,20 @@ public class UsuarioService {
 
         Usuario savedUsuario = usuarioRepository.save(usuario);
         return toDTO(savedUsuario);
+    }
+
+    public void alterarSenha(AlterarSenhaDTO alterarSenhaDTO) throws RegraDeNegocioException {
+        Usuario usuario = usuarioRepository.findById(alterarSenhaDTO.getIdUsuario())
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+
+        if (!passwordEncoder.matches(alterarSenhaDTO.getSenhaAtual(), usuario.getSenha())) {
+            throw new RegraDeNegocioException("Senha atual incorreta");
+        }
+
+        String novaSenhaCriptografada = passwordEncoder.encode(alterarSenhaDTO.getNovaSenha());
+        usuario.setSenha(novaSenhaCriptografada);
+
+        usuarioRepository.save(usuario);
     }
 
     public void deletarUsuario(Long id) throws RegraDeNegocioException {

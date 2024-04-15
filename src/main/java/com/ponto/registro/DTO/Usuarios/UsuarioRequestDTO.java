@@ -1,4 +1,4 @@
-package com.ponto.registro.DTO;
+package com.ponto.registro.DTO.Usuarios;
 
 import com.ponto.registro.Models.Cargo;
 import io.swagger.v3.oas.annotations.media.Schema;

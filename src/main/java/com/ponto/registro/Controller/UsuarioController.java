@@ -1,9 +1,9 @@
 package com.ponto.registro.Controller;
 
-import com.ponto.registro.DTO.UsuarioDTO;
-import com.ponto.registro.DTO.UsuarioRequestDTO;
-import com.ponto.registro.DTO.UsuarioResponseDTO;
-import com.ponto.registro.Models.Cargo;
+import com.ponto.registro.DTO.Usuarios.AlterarSenhaDTO;
+import com.ponto.registro.DTO.Usuarios.UsuarioDTO;
+import com.ponto.registro.DTO.Usuarios.UsuarioRequestDTO;
+import com.ponto.registro.DTO.Usuarios.UsuarioResponseDTO;
 import com.ponto.registro.Service.UsuarioService;
 import com.ponto.registro.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,6 +50,12 @@ import java.util.List;
             throws RegraDeNegocioException {
         UsuarioResponseDTO usuarioCriado = usuarioService.criarUsuario(usuarioRequestDTO);
         return new ResponseEntity<>(usuarioCriado, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/alterar-senha")
+    public ResponseEntity<Void> alterarSenha(@RequestBody AlterarSenhaDTO alterarSenhaDTO) throws RegraDeNegocioException {
+        usuarioService.alterarSenha(alterarSenhaDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping

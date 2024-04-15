@@ -25,7 +25,8 @@ import java.util.List;
     private final UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> buscarTodosUsuarios() throws RegraDeNegocioException {
+    public ResponseEntity<List<UsuarioResponseDTO>> buscarTodosUsuarios()
+            throws RegraDeNegocioException {
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarTodosUsuarios();
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }

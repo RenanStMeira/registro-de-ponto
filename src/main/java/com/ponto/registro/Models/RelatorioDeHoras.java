@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.Id;
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 public class RelatorioDeHoras {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -23,5 +25,7 @@ public class RelatorioDeHoras {
     private Usuario usuario;
 
     private LocalDate data;
-    private int horasTrabalhadas;
+
+    @Column(name = "minutos_trabalhados")
+    private Duration minutosTrabalhados;
 }

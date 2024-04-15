@@ -2,17 +2,21 @@ package com.ponto.registro.Service;
 
 import com.ponto.registro.DTO.RegistroDeHoras.RegistroDeHorasDTO;
 import com.ponto.registro.Models.RegistroDeHoras;
+import com.ponto.registro.Models.RelatorioDeHoras;
 import com.ponto.registro.Models.Usuario;
 import com.ponto.registro.Repository.RegistroDeHorasRepository;
+import com.ponto.registro.Repository.RelatorioRepository;
 import com.ponto.registro.Repository.UsuarioRepository;
 import com.ponto.registro.exceptions.RegraDeNegocioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +24,7 @@ public class RegistroDeHorasService {
 
     private final RegistroDeHorasRepository registroDeHorasRepository;
     private final UsuarioRepository usuarioRepository;
+    private final RelatorioRepository relatorioDeHorasRepository;
 
     public RegistroDeHorasDTO iniciarRegistro(Long usuarioId) throws RegraDeNegocioException {
         RegistroDeHoras registro = new RegistroDeHoras();
@@ -28,6 +33,12 @@ public class RegistroDeHorasService {
         registro.setUsuario(usuario);
         registro.setDataHoraEntrada(LocalDateTime.now());
         RegistroDeHoras savedRegistro = registroDeHorasRepository.save(registro);
+        RelatorioDeHoras relatorio = new RelatorioDeHoras();
+        relatorio.setUsuario(usuario);
+        relatorio.setData(LocalDate.now());
+        relatorio.setMinutosTrabalhados(Duration.ofMinutes(0));
+        relatorioDeHorasRepository.save(relatorio);
+
         return toDTO(savedRegistro);
     }
 
@@ -36,6 +47,15 @@ public class RegistroDeHorasService {
                 .orElseThrow(() -> new RegraDeNegocioException("Registro não encontrado"));
         registro.setDataHoraSaida(LocalDateTime.now());
         RegistroDeHoras updatedRegistro = registroDeHorasRepository.save(registro);
+
+        Duration duration = Duration.between(registro.getDataHoraEntrada(), registro.getDataHoraSaida());
+        String formattedDuration = formatDuration(duration.toMillis());
+
+        RelatorioDeHoras relatorio = relatorioDeHorasRepository.findByUsuarioIdUsuario(registro.getUsuario().getIdUsuario())
+                .orElseThrow(() -> new RegraDeNegocioException("Relatório não encontrado"));
+        relatorio.setMinutosTrabalhados(duration);
+        relatorioDeHorasRepository.save(relatorio);
+
         return toDTO(updatedRegistro);
     }
 
@@ -78,5 +98,13 @@ public class RegistroDeHorasService {
         registro.setDataHoraEntrada(dto.getDataHoraEntrada());
         registro.setDataHoraSaida(dto.getDataHoraSaida());
         return registro;
+    }
+
+    public String formatDuration(long millis) {
+        Duration duration = Duration.ofMillis(millis);
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+        long seconds = duration.minusHours(hours).minusMinutes(minutes).getSeconds();
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
